@@ -9397,6 +9397,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "sui-archival"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "backoff",
+ "bcs",
+ "byteorder",
+ "bytes",
+ "fastcrypto",
+ "futures",
+ "integer-encoding",
+ "num_enum",
+ "object_store",
+ "prometheus",
+ "serde 1.0.152",
+ "sui-core",
+ "sui-protocol-config",
+ "sui-storage",
+ "sui-types",
+ "tempfile",
+ "tokio",
+ "tokio-stream",
+ "tracing",
+ "typed-store",
+ "typed-store-derive",
+ "workspace-hack",
+ "zstd",
+]
+
+[[package]]
 name = "sui-benchmark"
 version = "0.0.0"
 dependencies = [
@@ -10487,6 +10517,7 @@ dependencies = [
  "criterion",
  "eyre",
  "futures",
+ "integer-encoding",
  "itertools",
  "lru",
  "move-binary-format",
@@ -10494,6 +10525,7 @@ dependencies = [
  "move-core-types",
  "mysten-metrics",
  "num_cpus",
+ "num_enum",
  "object_store",
  "once_cell",
  "parking_lot 0.12.1",
@@ -10513,6 +10545,7 @@ dependencies = [
  "typed-store-derive",
  "url",
  "workspace-hack",
+ "zstd",
 ]
 
 [[package]]
