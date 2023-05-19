@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #![allow(dead_code)]
 
+mod reader;
 mod writer;
 
 use anyhow::{anyhow, Result};
@@ -158,6 +159,11 @@ impl Manifest {
     pub fn next_checkpoint_seq_num(&self) -> u64 {
         match self {
             Manifest::V1(manifest) => manifest.next_checkpoint_seq_num,
+        }
+    }
+    pub fn files(&self) -> Vec<FileMetadata> {
+        match self {
+            Manifest::V1(manifest) => manifest.file_metadata.clone(),
         }
     }
     pub fn update(
