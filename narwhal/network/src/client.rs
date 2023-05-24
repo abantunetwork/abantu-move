@@ -12,7 +12,7 @@ use tokio::{select, time::sleep};
 use tracing::debug;
 use types::{
     error::LocalClientError, FetchBatchesRequest, FetchBatchesResponse, PrimaryToWorker,
-    WorkerOthersBatchMessage, WorkerOurBatchMessage, WorkerOurBatchMessageV2,
+    WorkerOthersBatchMessage, WorkerOurBatchMessage, WorkerOwnBatchMessage,
     WorkerSynchronizeMessage, WorkerToPrimary,
 };
 
@@ -174,6 +174,7 @@ impl PrimaryToWorkerClient for NetworkClient {
 
 #[async_trait]
 impl WorkerToPrimaryClient for NetworkClient {
+    // TODO: Remove once we have upgraded to protocol version 12.
     async fn report_our_batch(
         &self,
         request: WorkerOurBatchMessage,
@@ -189,13 +190,13 @@ impl WorkerToPrimaryClient for NetworkClient {
             },
         }
     }
-    async fn report_our_batch_v2(
+    async fn report_own_batch(
         &self,
-        request: WorkerOurBatchMessageV2,
+        request: WorkerOwnBatchMessage,
     ) -> Result<(), LocalClientError> {
         let c = self.get_worker_to_primary_handler().await?;
         select! {
-            resp = c.report_our_batch_v2(Request::new(request)) => {
+            resp = c.report_own_batch(Request::new(request)) => {
                 resp.map_err(|e| LocalClientError::Internal(format!("{e:?}")))?;
                 Ok(())
             },

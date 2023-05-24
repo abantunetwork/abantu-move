@@ -180,8 +180,8 @@ async fn accept_suspended_certificates() {
         1..=5,
         &genesis,
         &committee,
-        keys.as_slice(),
         &latest_protocol_version(),
+        keys.as_slice(),
     );
     let certificates = certificates.into_iter().collect_vec();
 
@@ -532,8 +532,8 @@ async fn synchronizer_recover_previous_round() {
         1..=2,
         &genesis,
         &committee,
-        &keys,
         &latest_protocol_version(),
+        &keys,
     );
     let all_certificates: Vec<_> = all_certificates.into_iter().collect();
     let round_1_certificates = all_certificates[0..3].to_vec();
@@ -652,8 +652,8 @@ async fn deliver_certificate_using_dag() {
         1..=4,
         &genesis,
         &committee,
-        &keys,
         &latest_protocol_version(),
+        &keys,
     );
 
     // insert the certificates in the DAG
@@ -724,8 +724,8 @@ async fn deliver_certificate_using_store() {
         1..=4,
         &genesis,
         &committee,
-        &keys,
         &latest_protocol_version(),
+        &keys,
     );
 
     // insert the certificates in the DAG
@@ -796,8 +796,8 @@ async fn deliver_certificate_not_found_parents() {
         1..=4,
         &genesis,
         &committee,
-        &keys,
         &latest_protocol_version(),
+        &keys,
     );
 
     // take the last one (top) and test for parents
@@ -972,8 +972,8 @@ async fn gc_suspended_certificates() {
         1..=5,
         &genesis,
         &committee,
-        keys.as_slice(),
         &latest_protocol_version(),
+        keys.as_slice(),
     );
     let certificates = certificates.into_iter().collect_vec();
 

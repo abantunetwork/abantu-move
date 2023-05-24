@@ -33,10 +33,10 @@ async fn commit_one() {
         .collect::<BTreeSet<_>>();
     let (mut certificates, next_parents) = test_utils::make_optimal_certificates(
         &committee,
+        &latest_protocol_version(),
         1..=4,
         &genesis,
         &ids,
-        &latest_protocol_version(),
     );
 
     // Make one certificate with round 5 to trigger the commits.
@@ -113,10 +113,10 @@ async fn dead_node() {
 
     let (mut certificates, _) = test_utils::make_optimal_certificates(
         &committee,
+        &latest_protocol_version(),
         1..=9,
         &genesis,
         &ids,
-        &latest_protocol_version(),
     );
 
     // Spawn the consensus engine and sink the primary channel.
@@ -195,10 +195,10 @@ async fn not_enough_support() {
     let nodes: Vec<_> = ids.iter().take(3).cloned().collect();
     let (out, parents) = test_utils::make_optimal_certificates(
         &committee,
+        &latest_protocol_version(),
         1..=1,
         &genesis,
         &nodes,
-        &latest_protocol_version(),
     );
     certificates.extend(out);
 
@@ -216,10 +216,10 @@ async fn not_enough_support() {
     let nodes: Vec<_> = ids.iter().skip(1).cloned().collect();
     let (out, mut parents) = test_utils::make_optimal_certificates(
         &committee,
+        &latest_protocol_version(),
         2..=2,
         &parents,
         &nodes,
-        &latest_protocol_version(),
     );
     certificates.extend(out);
 
@@ -266,10 +266,10 @@ async fn not_enough_support() {
     let nodes: Vec<_> = ids.iter().take(3).cloned().collect();
     let (out, parents) = test_utils::make_optimal_certificates(
         &committee,
+        &latest_protocol_version(),
         4..=6,
         &parents,
         &nodes,
-        &latest_protocol_version(),
     );
     certificates.extend(out);
 
@@ -358,20 +358,20 @@ async fn missing_leader() {
     let nodes: Vec<_> = ids.iter().skip(1).cloned().collect();
     let (out, parents) = test_utils::make_optimal_certificates(
         &committee,
+        &latest_protocol_version(),
         1..=2,
         &genesis,
         &nodes,
-        &latest_protocol_version(),
     );
     certificates.extend(out);
 
     // Add back the leader for rounds 3, 4, 5 and 6.
     let (out, parents) = test_utils::make_optimal_certificates(
         &committee,
+        &latest_protocol_version(),
         3..=6,
         &parents,
         &ids,
-        &latest_protocol_version(),
     );
     certificates.extend(out);
 
