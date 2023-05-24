@@ -383,6 +383,7 @@ async fn test_request_vote_has_missing_parents() {
                 test_utils::fixture_batch_with_transactions(
                     10,
                     &test_utils::latest_protocol_version(),
+                    committee.epoch(),
                 ),
                 0,
                 0,
@@ -554,6 +555,7 @@ async fn test_request_vote_accept_missing_parents() {
                 test_utils::fixture_batch_with_transactions(
                     10,
                     &test_utils::latest_protocol_version(),
+                    committee.epoch(),
                 ),
                 0,
                 0,
@@ -688,6 +690,7 @@ async fn test_request_vote_missing_batches() {
                     test_utils::fixture_batch_with_transactions(
                         10,
                         &test_utils::latest_protocol_version(),
+                        fixture.committee().epoch(),
                     ),
                     0,
                     0,
@@ -714,6 +717,7 @@ async fn test_request_vote_missing_batches() {
                 test_utils::fixture_batch_with_transactions(
                     10,
                     &test_utils::latest_protocol_version(),
+                    fixture.committee().epoch(),
                 ),
                 1,
                 0,
@@ -837,6 +841,7 @@ async fn test_request_vote_already_voted() {
                     test_utils::fixture_batch_with_transactions(
                         10,
                         &test_utils::latest_protocol_version(),
+                        fixture.committee().epoch(),
                     ),
                     0,
                     0,
@@ -884,6 +889,7 @@ async fn test_request_vote_already_voted() {
                 test_utils::fixture_batch_with_transactions(
                     10,
                     &test_utils::latest_protocol_version(),
+                    fixture.committee().epoch(),
                 ),
                 1,
                 0,
@@ -936,6 +942,7 @@ async fn test_request_vote_already_voted() {
                 test_utils::fixture_batch_with_transactions(
                     10,
                     &test_utils::latest_protocol_version(),
+                    fixture.committee().epoch(),
                 ),
                 1,
                 0,
@@ -1028,8 +1035,12 @@ async fn test_fetch_certificates_handler() {
             .into_iter()
             .map(|header| fixture.certificate(&header).digest())
             .collect();
-        (_, current_round) =
-            fixture.headers_round(i, &parents, &test_utils::latest_protocol_version());
+        (_, current_round) = fixture.headers_round(
+            i,
+            &parents,
+            &test_utils::latest_protocol_version(),
+            fixture.committee().epoch(),
+        );
         headers.extend(current_round.clone());
     }
 
@@ -1201,6 +1212,7 @@ async fn test_process_payload_availability_success() {
                     test_utils::fixture_batch_with_transactions(
                         10,
                         &test_utils::latest_protocol_version(),
+                        fixture.committee().epoch(),
                     ),
                     0,
                     0,
@@ -1363,6 +1375,7 @@ async fn test_process_payload_availability_when_failures() {
                     test_utils::fixture_batch_with_transactions(
                         10,
                         &test_utils::latest_protocol_version(),
+                        fixture.committee().epoch(),
                     ),
                     0,
                     0,
@@ -1474,6 +1487,7 @@ async fn test_request_vote_created_at_in_future() {
                     test_utils::fixture_batch_with_transactions(
                         10,
                         &test_utils::latest_protocol_version(),
+                        fixture.committee().epoch(),
                     ),
                     0,
                     0,
@@ -1525,6 +1539,7 @@ async fn test_request_vote_created_at_in_future() {
                 test_utils::fixture_batch_with_transactions(
                     10,
                     &test_utils::latest_protocol_version(),
+                    fixture.committee().epoch(),
                 ),
                 1,
                 0,
@@ -1560,7 +1575,11 @@ async fn test_request_vote_created_at_in_future() {
         .round(2)
         .parents(certificates.keys().cloned().collect())
         .with_payload_batch(
-            test_utils::fixture_batch_with_transactions(10, &test_utils::latest_protocol_version()),
+            test_utils::fixture_batch_with_transactions(
+                10,
+                &test_utils::latest_protocol_version(),
+                fixture.committee().epoch(),
+            ),
             1,
             0,
         )
