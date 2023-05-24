@@ -1,6 +1,7 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+import { useGetOriginByteKioskContents } from '@mysten/core';
 import { ArrowRight16 } from '@mysten/icons';
 import { getTransactionDigest, TransactionBlock } from '@mysten/sui.js';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -8,6 +9,7 @@ import { Form, Field, Formik } from 'formik';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
+import { useTransferKioskItem } from './useTransferKioskItem';
 import { createValidationSchema } from './validation';
 import { useActiveAddress } from '_app/hooks/useActiveAddress';
 import { Button } from '_app/shared/ButtonUI';
@@ -22,7 +24,13 @@ import { QredoActionIgnoredByUser } from '_src/ui/app/QredoSigner';
 import { getSignerOperationErrorMessage } from '_src/ui/app/helpers/errorMessages';
 import { useQredoTransaction } from '_src/ui/app/hooks/useQredoTransaction';
 
-export function TransferNFTForm({ objectId }: { objectId: string }) {
+export function TransferNFTForm({
+    objectId,
+    objectType,
+}: {
+    objectId: string;
+    objectType?: string;
+}) {
     const activeAddress = useActiveAddress();
     const validationSchema = createValidationSchema(
         activeAddress || '',
@@ -32,11 +40,23 @@ export function TransferNFTForm({ objectId }: { objectId: string }) {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const { clientIdentifier, notificationModal } = useQredoTransaction();
+
+    const kioskContents = useGetOriginByteKioskContents(activeAddress);
+    const transferKioskItem = useTransferKioskItem({ objectId, objectType });
+    const isContainedInKiosk = kioskContents?.data?.some(
+        (kioskItem) => kioskItem.data?.objectId === objectId
+    );
+
     const transferNFT = useMutation({
         mutationFn: async (to: string) => {
             if (!to || !signer) {
                 throw new Error('Missing data');
             }
+
+            if (isContainedInKiosk) {
+                return transferKioskItem.mutateAsync(to);
+            }
+
             const tx = new TransactionBlock();
             tx.transferObjects([tx.object(objectId)], tx.pure(to));
 
