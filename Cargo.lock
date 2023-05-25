@@ -10874,6 +10874,7 @@ dependencies = [
  "move-core-types",
  "move-disassembler",
  "move-ir-types",
+ "move-vm-types",
  "mysten-metrics",
  "mysten-network",
  "narwhal-config",
