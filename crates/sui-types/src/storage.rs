@@ -233,6 +233,8 @@ pub trait ReadStore {
 
     fn get_highest_synced_checkpoint(&self) -> Result<VerifiedCheckpoint, Self::Error>;
 
+    fn get_lowest_available_checkpoint(&self) -> Result<CheckpointSequenceNumber, Self::Error>;
+
     fn get_full_checkpoint_contents_by_sequence_number(
         &self,
         sequence_number: CheckpointSequenceNumber,
@@ -284,6 +286,10 @@ impl<T: ReadStore> ReadStore for &T {
 
     fn get_highest_synced_checkpoint(&self) -> Result<VerifiedCheckpoint, Self::Error> {
         ReadStore::get_highest_synced_checkpoint(*self)
+    }
+
+    fn get_lowest_available_checkpoint(&self) -> Result<CheckpointSequenceNumber, Self::Error> {
+        ReadStore::get_lowest_available_checkpoint(*self)
     }
 
     fn get_full_checkpoint_contents_by_sequence_number(
@@ -428,6 +434,10 @@ impl InMemoryStore {
         self.highest_synced_checkpoint
             .as_ref()
             .and_then(|(_, digest)| self.get_checkpoint_by_digest(digest))
+    }
+
+    pub fn get_lowest_available_checkpoint(&self) -> CheckpointSequenceNumber {
+        0
     }
 
     pub fn get_checkpoint_contents(
@@ -591,6 +601,10 @@ impl ReadStore for SharedInMemoryStore {
             .cloned()
             .expect("storage should have been initialized with genesis checkpoint")
             .pipe(Ok)
+    }
+
+    fn get_lowest_available_checkpoint(&self) -> Result<CheckpointSequenceNumber, Self::Error> {
+        Ok(self.inner().get_lowest_available_checkpoint())
     }
 
     fn get_full_checkpoint_contents_by_sequence_number(

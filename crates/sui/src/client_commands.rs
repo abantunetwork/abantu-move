@@ -1173,6 +1173,7 @@ impl SuiClientCommands {
                         .to_vec()
                         .map_err(|e| anyhow!(e))?,
                 )?;
+                println!("@@@@@@@@@@@@@@@@@ data {:?}", data);
 
                 let mut sigs = Vec::new();
                 for sig in signatures {

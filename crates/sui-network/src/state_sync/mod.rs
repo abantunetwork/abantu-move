@@ -88,6 +88,7 @@ pub use generated::{
     state_sync_server::{StateSync, StateSyncServer},
 };
 pub use server::GetCheckpointSummaryRequest;
+pub use server::GetPeerLatestCheckpointInfoResponse;
 
 use self::{metrics::Metrics, server::CheckpointContentsDownloadLimitLayer};
 
@@ -893,6 +894,7 @@ where
                     {
                         // peer didn't give us a checkpoint with the height that we requested
                         if *checkpoint.sequence_number() != next {
+                            // FIXME error:
                             continue;
                         }
 
@@ -916,8 +918,9 @@ where
 
         // Verify the checkpoint
         let checkpoint = {
-            let checkpoint = maybe_checkpoint
-                .ok_or_else(|| anyhow::anyhow!("no peers were able to help sync"))?;
+            let checkpoint = maybe_checkpoint.ok_or_else(|| {
+                anyhow::anyhow!("no peers were able to help sync checkpoint {}", next)
+            })?;
             match verify_checkpoint(&current, &store, checkpoint) {
                 Ok(verified_checkpoint) => verified_checkpoint,
                 Err(checkpoint) => {

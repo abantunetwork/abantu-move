@@ -1758,6 +1758,7 @@ impl Message for SenderSignedData {
         );
         // All required signers need to be sign.
         let present_sigs = self.get_signer_sig_mapping()?;
+        println!("@@@@@@@@@@@@@@22 present_sigs: {:?}", present_sigs);
         for s in signers {
             if !present_sigs.contains_key(&s) {
                 return Err(SuiError::SignerSignatureAbsent {
