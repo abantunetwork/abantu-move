@@ -755,6 +755,7 @@ async fn get_latest_from_peer(
     }
 
     let checkpoint = {
+        // let request = Request::new(GetCheckpointSummaryRequest::Latest).with_timeout(timeout);
         let request = Request::new(GetCheckpointSummaryRequest::Latest).with_timeout(timeout);
         let response = client
             .get_checkpoint_summary(request)
@@ -774,6 +775,31 @@ async fn get_latest_from_peer(
         .write()
         .unwrap()
         .update_peer_info(peer_id, checkpoint);
+}
+
+/// Queries a peer for their highest_synced_checkpoint and low checkpoint watermark
+async fn query_peer_for_latest_info(client: &StateSyncClient<anemo::Peer>) -> Result<Checkpoint, Option<CheckpointSequenceNumber>> {
+    let request = Request::new(GetCheckpointSummaryRequest::Latest).with_timeout(timeout);
+    let response = client
+        .get_checkpoint_summary(request)
+        .await
+        .map(Response::into_inner);
+    // let request = Request::new(GetPeerLatestCheckpointInfo::Latest).with_timeout(timeout);
+    match response {
+        Ok(Some(checkpoint)) => checkpoint,
+        Ok(None) => return,
+        Err(anemo::rpc::Status {
+            status: anemo::types::response::StatusCode::NotFound,
+            ..
+        }) => {
+            trace!("get_latest_checkpoint_summary request failed: {status:?}");
+            return;
+        },
+        Err(other) => {
+
+        }
+    }
+
 }
 
 async fn query_peers_for_their_latest_checkpoint(
